@@ -20,27 +20,27 @@ var (
 func init() {
 	flag.StringVar(
 		&source,
-		"source",
+		"s",
 		"./",
-		"the html template file or dir",
+		"[source] the html template file or dir",
 	)
 	flag.StringVar(
 		&dest,
-		"dest",
+		"d",
 		"",
-		"generated golang files dir, it will be the same with source if not set",
+		"[destination] generated golang files dir, it will be the same with source if not set",
 	)
 	flag.StringVar(
 		&pkgName,
-		"pkgname",
+		"p",
 		"template",
-		"the generated template package name",
+		"[package] the generated template package name",
 	)
 	flag.BoolVar(
 		&watch,
-		"watch",
+		"w",
 		false,
-		"whether automic compile when the source files change",
+		"[watch] whether automic compile when the source files change",
 	)
 }
 

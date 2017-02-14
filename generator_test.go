@@ -108,7 +108,7 @@ func UserList(userList []string) *bytes.Buffer {
     <a href="/user/` + "`" + `)
 		_buffer.WriteString(html.EscapeString(user))
 		_buffer.WriteString(` + "`" + `">
-        `  + "`" + `)
+        ` + "`" + `)
 		_buffer.WriteString(user)
 		_buffer.WriteString(` + "`" + `
     </a>
