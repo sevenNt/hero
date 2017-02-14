@@ -86,7 +86,7 @@ import (
 	"bytes"
 	"html"
 
-	"github.com/shiyanhui/hero"
+	"github.com/sevenNt/hero"
 )
 
 func Add(a, b int) int {

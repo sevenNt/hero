@@ -10,7 +10,7 @@
 //
 // ## Install
 //
-//     go get -u github.com/shiyanhui/hero
+//     go get -u github.com/sevenNt/hero
 //
 // ## Usage
 //

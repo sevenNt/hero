@@ -11,6 +11,10 @@ import (
 	"sync"
 )
 
+type genRes struct {
+	useUnsafe bool
+}
+
 func writeToFile(path string, buffer *bytes.Buffer) {
 	err := ioutil.WriteFile(path, buffer.Bytes(), os.ModePerm)
 	if err != nil {
@@ -31,7 +35,8 @@ func checkError(err error) {
 	}
 }
 
-func gen(n *node, buffer *bytes.Buffer) {
+func gen(n *node, buffer *bytes.Buffer) (res *genRes) {
+	res = new(genRes)
 	for _, child := range n.children {
 		switch child.t {
 		case TypeCode:
@@ -53,6 +58,7 @@ func gen(n *node, buffer *bytes.Buffer) {
 					goto WriteBreakLine
 				} else {
 					format = "(*string)(*unsafe.Pointer(&%s))"
+					res.useUnsafe = true
 				}
 			} else {
 				switch child.subtype {
@@ -90,6 +96,8 @@ func gen(n *node, buffer *bytes.Buffer) {
 	WriteBreakLine:
 		buffer.WriteByte(BreakLine)
 	}
+
+	return
 }
 
 // Generate generates go code from source to test. pkgName represents the
@@ -146,9 +154,9 @@ func Generate(source, dest, pkgName string) {
 			buffer.WriteString(`
 				import "html"
 				import "strconv"
-				import "unsafe"
+				import "bytes"
 
-				import "github.com/shiyanhui/hero"
+				import "github.com/sevenNt/hero"
 			`)
 
 			imports := n.childrenByType(TypeImport)
@@ -166,11 +174,16 @@ func Generate(source, dest, pkgName string) {
 			buffer.WriteString(`{
 				_buffer := hero.GetBuffer()
 			`)
-			gen(n, buffer)
+			genRes := gen(n, buffer)
 			buffer.WriteString(`
 				return _buffer
 			}`)
 
+			if genRes.useUnsafe {
+				buffer.WriteString(`
+					import "unsafe"
+				`)
+			}
 			writeToFile(fileName, buffer)
 		}(n, path, fileName)
 	}
@@ -178,6 +191,9 @@ func Generate(source, dest, pkgName string) {
 
 	fmt.Println("Executing goimports...")
 	execCommand("goimports -w " + dest)
+
+	fmt.Println("Executing go fmt...")
+	execCommand("go fmt " + dest + "/*.go")
 
 	fmt.Println("Executing go vet...")
 	execCommand("go tool vet -v " + dest)
