@@ -1,4 +1,5 @@
 # Hero
+(访问源分支请前往[shiyanhui/hero](github.com/shiyanhui/hero))
 
 Hero是一个高性能、强大并且易用的go模板引擎，工作原理是把模板预编译为go代码。Hero目前已经在[bthub.io](http://bthub.io)的线上环境上使用。
 
@@ -30,21 +31,22 @@ Hero是一个高性能、强大并且易用的go模板引擎，工作原理是�
 hero [options]
 
 options:
-	- source:  模板目录，默认为当前目录
-	- dest:    生成的go代码的目录，如果没有设置的话，和source一样
-	- pkgname: 生成的go代码包的名称，默认为template
-	- watch:   是否监控模板文件改动并自动编译
+	- s: 模板目录，默认为当前目录
+	- d: 生成的go代码的目录，如果没有设置的话，和source一样
+	- p: 生成的go代码包的名称，默认为template
+	- w: 是否监控模板文件改动并自动编译
+	- e: 指定编译源文件后缀，默认为dtpl
 
 example:
 	hero -source="./"
-	hero -source="$GOPATH/src/app/template" -watch
+	hero -source="$GOPATH/src/app/template" -w
 ```
 
 ## Quick Start
 
-假设我们现在要渲染一个用户列表模板`userlist.html`, 它继承自`index.html`, 并且一个用户的模板是`user.html`. 我们还假设所有的模板都在`$GOPATH/src/app/template`目录下。
+假设我们现在要渲染一个用户列表模板`userlist.dtpl`, 它继承自`index.dtpl`, 并且一个用户的模板是`user.dtpl`. 我们还假设所有的模板都在`$GOPATH/src/app/template`目录下。
 
-### index.html
+### index.dtpl
 
 ```html
 <!DOCTYPE html>
@@ -60,23 +62,23 @@ example:
 </html>
 ```
 
-### users.html
+### users.dtpl
 
 ```html
 <%: func UserList(userList []string) []byte %>
 
-<%~ "index.html" %>
+<%~ "index.dtpl" %>
 
 <%@ body { %>
     <% for _, user := range userList { %>
         <ul>
-            <%+ "user.html" %>
+            <%+ "user.dtpl" %>
         </ul>
     <% } %>
 <% } %>
 ```
 
-### user.html
+### user.dtpl
 
 ```html
 <li>
@@ -90,7 +92,7 @@ example:
 hero -source="$GOPATH/src/app/template"
 ```
 
-编译后，我们将在同一个目录下得到三个go文件，分别是`index.html.go`, `user.html.go` and `userlist.html.go`, 然后我们在http server里边去调用模板：
+编译后，我们将在同一个目录下得到三个go文件，分别是`index.dtpl.go`, `user.dtpl.go` and `userlist.dtpl.go`, 然后我们在http server里边去调用模板：
 
 ### main.go
 
@@ -129,11 +131,11 @@ Hero总共有九种语句，他们分别是：
 
 - 模板继承语句 `<%~ "parent template" %>`
   - 该语句声明要继承的模板。
-  - 例: `<%~ "index.html" >`
+  - 例: `<%~ "index.dtpl" >`
 
 - 模板include语句 `<%+ "sub template" %>`
   - 该语句把要include的模板加载进该模板，工作原理和`C++`中的`#include`有点类似。
-  - 例: `<%+ "user.html" >`
+  - 例: `<%+ "user.dtpl" >`
 
 - 包导入语句 `<%! go code %>`
   - 该语句用来声明所有在函数外的代码，包括依赖包导入、全局变量、const等。
