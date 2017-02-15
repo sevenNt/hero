@@ -1,8 +1,6 @@
 # Hero
 (For source branch[shiyanhui/hero](github.com/shiyanhui/hero))
 
-([中文文档](https://github.com/sevenNt/hero/blob/master/README_CN.md))
-
 Hero is a handy, fast and powerful go template engine, which pre-compiles the html templtes to go code.
 It has been used in production environment in [bthub.io](http://bthub.io).
 
