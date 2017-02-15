@@ -22,8 +22,8 @@ Hero是一个高性能、强大并且易用的go模板引擎，工作原理是�
 
 ## Install
 
-    go get github.com/shiyanhui/hero
-    go install github.com/shiyanhui/hero/hero
+    go get github.com/sevenNt/hero
+    go install github.com/sevenNt/hero/hero
 
 ## Usage
 
