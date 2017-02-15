@@ -1,4 +1,5 @@
 # Hero
+(For source branch[shiyanhui/hero](github.com/shiyanhui/hero))
 
 Hero is a handy, fast and powerful go template engine, which pre-compiles the html templtes to go code.
 It has been used in production environment in [bthub.io](http://bthub.io).
@@ -41,24 +42,25 @@ in the benchmark. For more details and benchmarks please come to [github.com/Sli
 hero [options]
 
 options:
-	- source:  the html template file or dir.
-	- dest:    generated golang files dir, it will be the same with source if not set.
-	- pkgname: the generated template package name, default is `template`.
-	- watch:   whether automic compile when the source files change.
+	- s: the html template file or dir.
+	- d: generated golang files dir, it will be the same with source if not set.
+	- p: the generated template package name, default is `template`.
+	- w: whether automic compile when the source files change.
+	- e: only file with the extenstion will be complied, default is `dtpl`
 
 example:
 	hero -source="./"
-	hero -source="$GOPATH/src/app/template" -watch
+	hero -source="$GOPATH/src/app/template" -w
 ```
 
 ## Quick Start
 
-Assume that we are going to render a user list `userlist.html`. `index.html`
-is the layout, and `user.html` is an item in the list.
+Assume that we are going to render a user list `userlist.dtpl`. `index.dtpl`
+is the layout, and `user.dtpl` is an item in the list.
 
 And assumes that they are all under `$GOPATH/src/app/template`
 
-### index.html
+### index.dtpl
 
 ```html
 <!DOCTYPE html>
@@ -74,23 +76,23 @@ And assumes that they are all under `$GOPATH/src/app/template`
 </html>
 ```
 
-### users.html
+### users.dtpl
 
 ```html
 <%: func UserList(userList []string) *bytes.Buffer %>
 
-<%~ "index.html" %>
+<%~ "index.dtpl" %>
 
 <%@ body { %>
     <% for _, user := range userList { %>
         <ul>
-            <%+ "user.html" %>
+            <%+ "user.dtpl" %>
         </ul>
     <% } %>
 <% } %>
 ```
 
-### user.html
+### user.dtpl
 
 ```html
 <li>
@@ -105,7 +107,7 @@ hero -source="$GOPATH/src/app/template"
 ```
 
 We will get three new `.go` files under `$GOPATH/src/app/template`,
-i.e. `index.html.go`, `user.html.go` and `userlist.html.go`.
+i.e. `index.dtpl.go`, `user.dtpl.go` and `userlist.dtpl.go`.
 
 Then we write a http server in `$GOPATH/src/app/main.go`.
 
@@ -154,12 +156,12 @@ There are only nine necessary kinds of statements, which are:
 - Extend `<%~ "parent template" %>`
   - Extend statement states the parent template the current template extends.
   - The parent template should be quoted with `""`.
-  - Example: `<%~ "index.html" >`, which we have mentioned in quick start, too.
+  - Example: `<%~ "index.dtpl" >`, which we have mentioned in quick start, too.
 
 - Include `<%+ "sub template" %>`
   - Include statement includes a sub-template to the current template. It works like `#include` in `C++`.
   - The sub-template should be quoted with `""`.
-  - Example: `<%+ "user.html" >`, which we also have mentioned in quick start.
+  - Example: `<%+ "user.dtpl" >`, which we also have mentioned in quick start.
 
 - Import `<%! go code %>`
   - Import statement imports the packages used in the defined function, and it also contains everything that is outside of the defined function.
