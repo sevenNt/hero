@@ -335,14 +335,14 @@ func parseFile(dir, subpath string) *node {
 	return root
 }
 
-func parseDir(dir string) {
+func parseDir(dir, ext string) {
 	filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		stat, err := os.Stat(path)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		if filepath.Ext(path) == ".html" && !stat.IsDir() {
+		if filepath.Ext(path) == ("."+ext) && !stat.IsDir() {
 			node := parseFile(dir, path[len(dir):])
 			parsedNodes[path] = node
 		}

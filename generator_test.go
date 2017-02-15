@@ -58,7 +58,7 @@ func TestGenAbsPath(t *testing.T) {
 }
 
 func TestGenerate(t *testing.T) {
-	Generate(rootDir, rootDir, "template")
+	Generate(rootDir, rootDir, "template", "dtpl")
 
 	cases := []struct {
 		file string

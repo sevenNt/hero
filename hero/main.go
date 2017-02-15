@@ -13,8 +13,8 @@ import (
 )
 
 var (
-	watch                 bool
-	source, dest, pkgName string
+	watch                      bool
+	source, dest, pkgName, ext string
 )
 
 func init() {
@@ -35,6 +35,12 @@ func init() {
 		"p",
 		"template",
 		"[package] the generated template package name",
+	)
+	flag.StringVar(
+		&ext,
+		"e",
+		"dtpl",
+		"[extension] only files with this extension are compiled",
 	)
 	flag.BoolVar(
 		&watch,
@@ -57,7 +63,7 @@ func main() {
 		dest = source
 	}
 
-	hero.Generate(source, dest, pkgName)
+	hero.Generate(source, dest, pkgName, ext)
 
 	if !watch {
 		return
@@ -73,7 +79,7 @@ func main() {
 			select {
 			case ev := <-watcher.Event:
 				if ev.IsDelete() || ev.IsModify() || ev.IsRename() {
-					hero.Generate(source, dest, pkgName)
+					hero.Generate(source, dest, pkgName, ext)
 				}
 			}
 		}

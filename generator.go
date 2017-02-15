@@ -102,7 +102,7 @@ func gen(n *node, buffer *bytes.Buffer) (res *genRes) {
 
 // Generate generates go code from source to test. pkgName represents the
 // package name of the generated code.
-func Generate(source, dest, pkgName string) {
+func Generate(source, dest, pkgName, ext string) {
 	defer cleanGlobal()
 
 	source, dest = genAbsPath(source), genAbsPath(dest)
@@ -112,10 +112,14 @@ func Generate(source, dest, pkgName string) {
 
 	fmt.Println("Parsing...")
 	if stat.IsDir() {
-		parseDir(source)
+		parseDir(source, ext)
 	} else {
 		source, file := filepath.Split(source)
-		parseFile(source, file)
+		if filepath.Ext(file) != ("." + ext) {
+			log.Fatal(file+" is not match extension:", ext)
+		} else {
+			parseFile(source, file)
+		}
 	}
 
 	stat, err = os.Stat(dest)
@@ -193,8 +197,9 @@ func Generate(source, dest, pkgName string) {
 	execCommand("goimports -w " + dest)
 
 	fmt.Println("Executing go fmt...")
-	execCommand("go fmt " + dest + "/*.go")
+	execCommand("gofmt -w " + dest)
 
 	fmt.Println("Executing go vet...")
-	execCommand("go tool vet -v " + dest)
+	execCommand("go tool vet " + dest)
+	//execCommand("go tool vet -v " + dest)
 }
